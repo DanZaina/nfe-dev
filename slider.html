@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forensic Engineering Panels</title>
+  <style>
+    /* Color variables */
+    :root {
+      --light-cream: #F2F1ED;
+      --dark-navy: #192231;
+      --accent-red: #FF4133;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      background-color: var(--light-cream);
+      color: var(--dark-navy);
+      padding: 2rem;
+    }
+    
+    .panel-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: var(--light-cream);
+      overflow: hidden;
+    }
+    
+    .panel-section {
+      padding: 2rem;
+      background-color: var(--light-cream);
+    }
+    
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background-color: var(--accent-red);
+      margin-top: 8px;
+    }
+    
+    .panels {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .panel {
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(25, 34, 49, 0.1);
+      overflow: hidden;
+      transition: background-color 0.3s ease;
+    }
+    
+    .panel:hover {
+      background-color: rgba(25, 34, 49, 0.03);
+    }
+    
+    .panel.active {
+      border-color: transparent;
+    }
+    
+    .panel-header {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0);
+      transition: background-color 0.3s ease;
+    }
+    
+    .panel.active .panel-header {
+      background-color: var(--dark-navy);
+      color: white;
+      border: none;
+    }
+    
+    .panel-number {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-right: 1.5rem;
+      min-width: 40px;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem;
+      color: var(--dark-navy);
+      transition: color 0.3s ease;
+    }
+    
+    .panel.active .panel-number {
+      color: var(--accent-red);
+    }
+    
+    .panel-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      flex-grow: 1;
+    }
+    
+    .panel-icon {
+      width: 20px;
+      height: 20px;
+      position: relative;
+    }
+    
+    .panel-icon::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid var(--dark-navy);
+      border-bottom: 2px solid var(--dark-navy);
+      transform: rotate(45deg);
+      top: 4px;
+      right: 5px;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .panel.active .panel-icon::before {
+      transform: rotate(-135deg);
+      border-color: white;
+    }
+    
+    .panel-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+      background-color: white;
+    }
+    
+    .panel.active .panel-body {
+      max-height: 900px;
+      background-color: var(--dark-navy);
+      color: white;
+    }
+    
+    .panel-content {
+      padding: 1.5rem 1.5rem 1.5rem 5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      border-top: none;
+    }
+    
+    .panel.active .panel-content {
+      border-top: none;
+    }
+    
+    .panel-content-title {
+      font-size: 38px;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      margin-top: 10px;
+      display: none;
+    }
+    
+    .panel.active .panel-content-title {
+      display: block;
+    }
+    
+    .panel-description {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: rgba(25, 34, 49, 0.8);
+    }
+    
+    .panel.active .panel-description {
+      color: #F8FAFC;
+    }
+    
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .panel-data {
+      padding: 1.5rem;
+      background-color: var(--light-cream);
+    }
+    
+    .data-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--dark-navy);
+    }
+    
+    .data-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent-red);
+      margin-bottom: 0.75rem;
+    }
+    
+    .data-description {
+      font-size: 0.875rem;
+      color: rgba(25, 34, 49, 0.7);
+    }
+    
+    .panel-image-single {
+      width: 700px;
+      height: 350px;
+      object-fit: cover;
+      margin: 1.5rem 0;
+      display: block;
+      max-width: 100%;
+    }
+    
+    @media (max-width: 768px) {
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .panel-images {
+        grid-template-columns: 1fr;
+      }
+      
+      .panel-content-title {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="panel-container">
+    <div class="panel-section">
+      <div class="panels">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-number">01</div>
+            <h2 class="panel-title">Forensic Engineering</h2>
+            <div class="panel-icon"></div>
+          </div>
+          <div class="panel-body">
+            <div class="panel-content">
+              <h2 class="panel-content-title">Forensic Engineering</h2>
+              <p class="panel-description">
+                Our forensic engineering services provide systematic investigations across design, construction, operation, and environmental factors related to losses. With our in-house experts and specialist network, we identify and communicate all root cause factors. This approach helps clients make informed liability decisions.
+              </p>
+              
+              <img src="img/sample.jpg" alt="Forensic Engineering" class="panel-image-single">
+            </div>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-number">02</div>
+            <h2 class="panel-title">Loss Remediation and Mitigation</h2>
+            <div class="panel-icon"></div>
+          </div>
+          <div class="panel-body">
+            <div class="panel-content">
+              <h2 class="panel-content-title">Loss Remediation and Mitigation</h2>
+              <p class="panel-description">
+                In the aftermath of a loss, swift action is crucial. Our professionals guide clients through immediate steps to isolate the issue, mitigate further damages, and limit operational downtime. Prioritizing safety and the preservation of evidence, Newtron ensures that clients receive clear guidance on securing their sites. This helps to maintain business continuity and mitigate long-term financial impacts.
+              </p>
+              
+              <img src="img/sample.jpg" alt="Loss Remediation" class="panel-image-single">
+            </div>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-number">03</div>
+            <h2 class="panel-title">Risk & Project Management</h2>
+            <div class="panel-icon"></div>
+          </div>
+          <div class="panel-body">
+            <div class="panel-content">
+              <h2 class="panel-content-title">Risk & Project Management</h2>
+              <p class="panel-description">
+                Understanding and managing risk is essential for stakeholders across industries. Newtron's Risk and Project Management services leverage our expertise in design, construction, and environmental assessments to provide thorough risk analysis and proactive management strategies. This comprehensive approach supports confident decision-making and strategic planning for future projects.
+              </p>
+              
+              <img src="img/sample.jpg" alt="Risk Management" class="panel-image-single">
+            </div>
+          </div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-number">04</div>
+            <h2 class="panel-title">Litigation Support & Dispute Resolution</h2>
+            <div class="panel-icon"></div>
+          </div>
+          <div class="panel-body">
+            <div class="panel-content">
+              <h2 class="panel-content-title">Litigation Support & Dispute Resolution</h2>
+              <p class="panel-description">
+                clients rely on our experienced, multidisciplinary team for impartial and professional analysis when legal action is unavoidable. State-of-the-art tools, including 3D renderings, video, and multimedia illustrations, support our reputation for delivering unbiased, clear, and concise findings. These resources clarify our conclusions and minimize the duration and cost of legal proceedings, driving cases toward efficient resolution.
+              </p>
+              
+              <img src="img/sample.jpg" alt="Expert and Dispute Services" class="panel-image-single">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const panels = document.querySelectorAll('.panel');
+      
+      // Function to activate a panel
+      function activatePanel(panel) {
+        // Close all panels
+        panels.forEach(p => {
+          p.classList.remove('active');
+        });
+        
+        // Open the current panel
+        panel.classList.add('active');
+      }
+      
+      // Function to close all panels
+      function closeAllPanels() {
+        panels.forEach(p => {
+          p.classList.remove('active');
+        });
+      }
+      
+      // Add hover events to each panel
+      panels.forEach(panel => {
+        panel.addEventListener('mouseenter', () => {
+          activatePanel(panel);
+        });
+        
+        panel.addEventListener('mouseleave', () => {
+          closeAllPanels();
+        });
+      });
+      
+      // No default panel activation
+    });
+  </script>
+</body>
+</html>
